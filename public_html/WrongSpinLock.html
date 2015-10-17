@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script> 
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+	
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
+
+
+
+</head>
+<body>
+
+<script>
+
+var data;
+ var json;
+ var length;
+ var xmlhttp;
+var count=0;
+//var target=0;
+ function loadXMLDoc(url,cfunc)
+{
+if (window.XMLHttpRequest)
+  {
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+xmlhttp.onreadystatechange=cfunc;
+xmlhttp.open("GET",url,true);
+xmlhttp.send();
+}
+
+
+
+function getData()
+{
+ 
+   
+loadXMLDoc("https://s3-us-west-2.amazonaws.com/elasticbeanstalk-us-west-2-107230748615/resources/tests/spinlock1",function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+	
+	data= xmlhttp.responseText;
+    json = JSON.parse(data); 
+	
+	length=json[count].length;
+	var newarr=json[count];
+	//newarr is 00301
+	
+	//while(newarr=="x"||newarr=="z")
+	
+	var thisarray = new Array(length);
+	for(var newarrlength=0; newarrlength<length; newarrlength++){
+	
+	  thisarray[newarrlength]=new Array();
+
+       for( var n=0;n<3;n++){	  
+	      thisarray[newarrlength][n]= spinner(newarr[newarrlength])[n]; //传进spinner里的是newarr的第一个数：0
+	 
+	     }
+	 }
+//	document.getElementById("showit").innerHTML=thisarray[2][0];
+	
+	
+	
+	
+	
+	
+	var line="<table style='width:30%' >";
+	
+	for(var j=0;j<3;j++){
+	
+	 // var thisarray= spinner(newarr[newarrlength]);
+	  
+	 line+="<tr id='tr"+j+"'>";
+	 
+    for( var i=0;i<length;i++)
+	 {
+	
+	    line+="<td id='td"+i+"'>"+thisarray[i][j]+"</td>";
+	
+	
+	
+	
+	    }
+		line+="</tr>";
+	}
+	line+="</table>";
+	
+	
+	
+	
+	//document.getElementById("table").document.write(line);
+	document.getElementById("showit").innerHTML = line;
+	
+	count++;
+	
+	
+
+    }
+  });
+ 
+ 
+  
+}
+
+
+
+ 
+function spinner(target){
+	var array=[0,1,2,3,4,5,6,7,8,9];
+	
+	//target=(target+target1)%10;
+	var arr=[1,0,9];
+	var point=2;
+	for(var i=0; i<target; i++){
+		var temp=arr[0];
+		var temp2=arr[1];
+		arr[0]=array[point];
+		arr[1]=temp;
+		arr[2]=temp2;
+		point++;
+		
+		while(point>9){
+			point=0;
+			
+		}
+	}
+	//arr1=arr;
+	return arr;
+}
+
+
+
+
+</script>
+
+
+
+
+
+
+<input id="bi" type="button" value="click it" onclick="getData()" >
+
+<p id="showit"></p>
+<p id="showit2"></p>
+</body>
+
+</html>
